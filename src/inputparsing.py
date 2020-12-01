@@ -13,8 +13,9 @@ def check_inputs():
 
     argv = sys.argv[1:]
     # print(argv)
-    opt, args = getopt.getopt(argv, "h:p:n:v")
-    # print(opt)
+    opt, args = getopt.getopt(
+        argv, "h:p:n:vH", ["host=", "port=", "name=", "verbose=", "Help="])
+    print(opt)
 
     for opt, arg in opt:
         if opt in ['-h']:
@@ -23,7 +24,7 @@ def check_inputs():
             port = arg
         elif opt in ['-n']:
             name = arg
-        elif opt in ['-p']:
+        elif opt in ['-v']:
             verbose = True
 
     print()
