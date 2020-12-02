@@ -1,0 +1,11 @@
+Usage: chat [--help] [-v] [-h HOST] [-p PORT] [-n NAME] NETID
+
+Arguments:
+ NETID The NetID of the user.
+
+Options:
+ --help
+ -v, --verbose
+ --host HOSTNAME, -h HOSTNAME
+ --port PORT, -p PORT
+ --name NAME, -n NAME

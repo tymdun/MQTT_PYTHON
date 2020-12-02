@@ -2,7 +2,7 @@ import tkinter as tk
 import inputparsing
 
 
-print(inputparsing.add(6, 7))
+inputparsing.mqtt_client_parse_arguments()
 
 exit()
 
