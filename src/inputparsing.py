@@ -14,11 +14,11 @@ def check_inputs():
     argv = sys.argv[1:]
     # print(argv)
     opt, args = getopt.getopt(
-        argv, "h:p:n:vH", ["host=", "port=", "name=", "verbose=", "Help="])
+        argv, "h:p:n:v", ["host=", "port=", "name=", "verbose", "help"])
     print(opt)
 
     for opt, arg in opt:
-        if opt in ['-h']:
+        if opt in ['-h', '--host']:
             host = arg
         elif opt in ['-p']:
             port = arg
