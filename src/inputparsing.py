@@ -67,7 +67,9 @@ def check_inputs():
         elif opt in ['-n']:
             name = arg
         elif opt in ['-v']:
-            logging.disable = False
+            #logging.disable = False
+            print("entered")
+            logging.basicConfig(level=0)
             verbose = True
 
     # print(len(opt))
@@ -93,7 +95,7 @@ def check_inputs():
 
 
 def mqtt_client_parse_arguments():
-    logging.disable = True
-    logging.basicConfig(level=logging.DEBUG)
+    #logging.disable = True
+    logging.basicConfig(level=70)
     check_inputs()
     return 0
