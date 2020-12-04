@@ -16,6 +16,18 @@ def printhelp(helpNeeded):
     return 0
 
 
+def checkPort(port):
+    highestPortNumber = 65353
+    lowestPortNumber = 1023
+    if (port.isnumeric() == False):
+        print("Port must be numeric\n", file=sys.stderr)
+        printhelp(False)
+    portInt = int(port)
+    if(portInt > highestPortNumber or portInt <= lowestPortNumber):
+        print("Port number must be below 65354 and above 1023\n", file=sys.stderr)
+        printhelp(False)
+
+
 def check_inputs():
     verbose = False
     help = False
@@ -41,6 +53,8 @@ def check_inputs():
             name = arg
         elif opt in ['-v']:
             logging.disable = False
+
+    checkPort(port)
 
     logging.info('Host: ' + host)
     logging.info('Port: ' + port)
