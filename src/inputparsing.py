@@ -28,6 +28,16 @@ def checkPort(port):
         printhelp(False)
 
 
+def checkArguments(numArguments):
+    if(numArguments < 1):
+        print("NETID argument Required\n", file=sys.stderr)
+        printhelp(False)
+
+    if(numArguments > 1):
+        print("Unknown Argument Provided", file=sys.stderr)
+        printhelp(False)
+
+
 def check_inputs():
     verbose = False
     help = False
@@ -38,9 +48,14 @@ def check_inputs():
 
     argv = sys.argv[1:]
     # print(argv)
-    opt, args = getopt.getopt(
-        argv, "h:p:n:v", ["host=", "port=", "name=", "verbose", "help"])
+    try:
+        opt, args = getopt.getopt(
+            argv, "h:p:n:v", ["host=", "port=", "name=", "verbose", "help"])
     # print(opt)
+
+    except getopt.GetoptError as e:
+        print("Option requires an argument", file=sys.stderr)
+        printhelp(False)
 
     for opt, arg in opt:
         if opt in ['--help']:
@@ -53,12 +68,24 @@ def check_inputs():
             name = arg
         elif opt in ['-v']:
             logging.disable = False
+            verbose = True
 
+    # print(len(opt))
+    # print(len(args))
+    # print(len(argv))
+    numArguments = (2 * len(opt))
+    if(verbose):
+        numArguments = numArguments + 1
+    # print(numArguments)
     checkPort(port)
+    checkArguments((len(argv) - numArguments))
+
+    netId = argv[-1]
 
     logging.info('Host: ' + host)
     logging.info('Port: ' + port)
     logging.info('Name: ' + name)
+    logging.info('NetID: ' + netId)
 
     print()
 
