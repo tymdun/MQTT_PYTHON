@@ -79,5 +79,5 @@ def mqtt_check_inputs():
     logging.info('NetID: ' + netId)
 
     configList = (host, port, name, netId)
-    print(configList)
+    # print(configList)
     return [host, port, name, netId]
