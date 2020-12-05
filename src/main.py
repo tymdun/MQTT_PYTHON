@@ -16,7 +16,17 @@ print(configList)
 client = mqtt.Client(configList[2], clean_session=False)
 # client.connect(configList[0], configList[1])
 
+# Event handling function ----------------------------------------------
+
+
+def sendMessage(Event):
+    print("HERE")
+    messageContents = inputTxt.get("1.0", "end")
+    inputTxt.delete("1.0", "end")
+    print(messageContents)
+
 # exit()
+
 
 root = tk.Tk()
 root.title("MQTT CHAT ROOM")
@@ -44,21 +54,15 @@ messageTxt.insert(tk.END, "HELLO WORLD")
 
 inputBox = tk.Frame(root)
 inputBox.place(rely=0.75, relwidth=1, relheight=0.25)
+inputSendBtn = tk.Button(inputBox, text="Send",
+                         bg='white', command=sendMessage)
+inputSendBtn.place(relx=0.8, relheight=1, relwidth=0.2)
+
 inputTxt = tk.Text(inputBox, bg=INPUT_COLOR, bd=5,
                    pady=20, padx=20, fg='white')
-inputTxt.place(relheight=1, relwidth=1)
+inputTxt.place(relheight=1, relwidth=0.8)
 
-# Event handling function ----------------------------------------------
-
-
-def sendMessage(Event):
-    print("HERE")
-    messageContents = inputTxt.get("1.0", "end")
-    inputTxt.delete("1.0", "end")
-    print(messageContents)
-
-
-    # Event Bindings
+# Event Bindings
 root.bind('<Return>', sendMessage)
 
 
