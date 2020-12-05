@@ -47,22 +47,13 @@ def mqtt_check_inputs():
     netId = "NETID"
 
     argv = sys.argv[1:]
-    # print(argv)
     try:
         opt, args = getopt.getopt(
             argv, "h:p:n:v", ["host=", "port=", "name=", "verbose", "help"])
-        # print(opt)
 
     except getopt.GetoptError as e:
         print("Option requires an argument", file=sys.stderr)
         printhelp(False)
-
-    # print(len(opt))
-    # print((opt))
-    # print(len(args))
-    # print((args))
-    # print(len(argv))
-    # print((argv))
 
     for opt, arg in opt:
         if opt in ['--help']:
@@ -74,16 +65,9 @@ def mqtt_check_inputs():
         elif opt in ['-n', '--name']:
             name = arg
         elif opt in ['-v']:
-            #logging.disable = False
             logging.basicConfig(level=logging.DEBUG)
             verbose = True
 
-    # print(len(opt))
-    # print((opt))
-    # print(len(args))
-    # print((args))
-    # print(len(argv))
-    # print((argv))
     checkPort(port)
     checkArguments(len(args))
 
