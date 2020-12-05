@@ -51,18 +51,25 @@ def check_inputs():
     try:
         opt, args = getopt.getopt(
             argv, "h:p:n:v", ["host=", "port=", "name=", "verbose", "help"])
-    # print(opt)
+        # print(opt)
 
     except getopt.GetoptError as e:
         print("Option requires an argument", file=sys.stderr)
         printhelp(False)
+
+    # print(len(opt))
+    # print((opt))
+    # print(len(args))
+    # print((args))
+    # print(len(argv))
+    # print((argv))
 
     for opt, arg in opt:
         if opt in ['--help']:
             printhelp(True)
         elif opt in ['-h', '--host']:
             host = arg
-        elif opt in ['-p']:
+        elif opt in ['-p', '--port']:
             port = arg
         elif opt in ['-n']:
             name = arg
@@ -73,14 +80,13 @@ def check_inputs():
             verbose = True
 
     # print(len(opt))
+    # print((opt))
     # print(len(args))
+    # print((args))
     # print(len(argv))
-    numArguments = (2 * len(opt))
-    if(verbose):
-        numArguments = numArguments + 1
-    # print(numArguments)
+    # print((argv))
     checkPort(port)
-    checkArguments((len(argv) - numArguments))
+    checkArguments(len(args))
 
     netId = argv[-1]
 
