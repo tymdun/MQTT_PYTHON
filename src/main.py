@@ -1,8 +1,11 @@
 import tkinter as tk
 import inputparsing
+import paho.mqtt.client as mqtt
 
-
-inputparsing.mqtt_client_parse_arguments()
+# print(inputparsing.mqtt_client_parse_arguments())
+configList = inputparsing.mqtt_check_inputs()
+print(configList)
+mqtt.Client(configList[2], clean_session=False, )
 
 exit()
 

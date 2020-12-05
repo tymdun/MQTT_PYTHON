@@ -3,6 +3,7 @@
 Necessary libraries to install 
 # pip install requests
 # sudo apt-get install python3-tk 
+# pip install paho-mqtt
 
 
 # if running on WSL

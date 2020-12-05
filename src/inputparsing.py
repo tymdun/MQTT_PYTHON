@@ -38,7 +38,7 @@ def checkArguments(numArguments):
         printhelp(False)
 
 
-def check_inputs():
+def mqtt_check_inputs():
     verbose = False
     help = False
     host = "localhost"
@@ -71,11 +71,10 @@ def check_inputs():
             host = arg
         elif opt in ['-p', '--port']:
             port = arg
-        elif opt in ['-n']:
+        elif opt in ['-n', '--name']:
             name = arg
         elif opt in ['-v']:
             #logging.disable = False
-            print("entered")
             logging.basicConfig(level=logging.DEBUG)
             verbose = True
 
@@ -95,12 +94,6 @@ def check_inputs():
     logging.info('Name: ' + name)
     logging.info('NetID: ' + netId)
 
-    print()
-
-    return 0
-
-
-def mqtt_client_parse_arguments():
-    #logging.disable = True
-    check_inputs()
-    return 0
+    configList = (host, port, name, netId)
+    print(configList)
+    return [host, port, name, netId]
