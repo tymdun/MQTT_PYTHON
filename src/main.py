@@ -43,10 +43,18 @@ client.loop_stop()
 # Event handling function ----------------------------------------------
 
 
-def sendMessage(Event):
+def sendMessage():
     messageContents = inputTxt.get("1.0", "end")
     inputTxt.delete("1.0", "end")
-    print(messageContents)
+    currentTime = int(time.time())
+    jsonInPy = {"timestamp": currentTime,
+                "name": configList[2], "message": messageContents}
+    jsonToSend = json.dumps(jsonInPy)
+    logging.info("The json to be sent: " + jsonToSend)
+
+
+def enterPressed(Event):
+    sendMessage()
 
 
 # Creates the root gui
@@ -81,7 +89,7 @@ inputTxt = tk.Text(inputBox, bg=INPUT_COLOR, bd=5,
 inputTxt.place(relheight=1, relwidth=0.8)
 
 # Event Bindings
-root.bind('<Return>', sendMessage)
+root.bind('<Return>', enterPressed)
 
 
 # button = tk.Button(inputBox, text="TEST BUTTON", bg='black')
