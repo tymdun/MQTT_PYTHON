@@ -2,6 +2,8 @@ import tkinter as tk
 import inputparsing
 import paho.mqtt.client as mqtt
 import time
+import logging
+import json
 
 HEIGHT = 700
 WIDTH = 1000
@@ -9,19 +11,21 @@ ONLINEUSERS_COLOR = '#018786'
 MESSAGE_COLOR = '#800080'
 INPUT_COLOR = '#192734'
 
+# MQTT HANDLERS FOR PYTHON -------------------------------------------------------
+
 
 def on_message(client, userdata, message):
-    print("message received ", str(message.payload.decode("utf-8")))
-    print("message topic=", message.topic)
-    print("message qos=", message.qos)
-    print("message retain flag=", message.retain)
+    print(str(message.payload.decode("utf-8")))
+    logging.info("message received " + str(message.payload.decode("utf-8")))
+    logging.info("message topic=" + message.topic)
+    logging.info("message qos=" + str(message.qos))
+    logging.info("message retain flag=" + str(message.retain))
 
 
 def on_publish(client, userdata, mid):
-    print("message succesfully sent")
+    logging.info("message succesfully sent")
 
 
-# print(inputparsing.mqtt_client_parse_arguments())
 configList = inputparsing.mqtt_check_inputs()
 print(configList)
 client = mqtt.Client(configList[2], clean_session=False)
@@ -30,18 +34,16 @@ client.on_publish = on_publish
 client.connect(configList[0], int(configList[1]))
 client.loop_start()
 client.publish("tymdun/uppercase", payload="MeatSticks")
-
 client.subscribe("tymdun/response", qos=1)
-time.sleep(5)
+time.sleep(0.5)
 client.loop_stop()
 
-exit()
+# exit()
 
 # Event handling function ----------------------------------------------
 
 
 def sendMessage(Event):
-    print("HERE")
     messageContents = inputTxt.get("1.0", "end")
     inputTxt.delete("1.0", "end")
     print(messageContents)
@@ -57,7 +59,7 @@ onlineUsers = tk.Frame(root)
 onlineUsers.place(relwidth=0.4, relheight=0.75)
 onlineText = tk.Text(onlineUsers, bg=ONLINEUSERS_COLOR, bd=5, pady=20, padx=20)
 onlineText.place(relheight=1, relwidth=1)
-#onlineText.insert(tk.END, "HELLO WORLD")
+# onlineText.insert(tk.END, "HELLO WORLD")
 onlineText.config(state='disabled')
 
 # Creates the message box which shows all the user messages
@@ -65,7 +67,7 @@ messages = tk.Frame(root)
 messages.place(relx=0.4, relwidth=0.6, relheight=0.75)
 messageTxt = tk.Text(messages, bg=MESSAGE_COLOR, bd=5, pady=20, padx=20)
 messageTxt.place(relheight=1, relwidth=1)
-#messageTxt.insert(tk.END, "HELLO WORLD")
+# messageTxt.insert(tk.END, "HELLO WORLD")
 # messageTxt.config(state='disabled')
 
 inputBox = tk.Frame(root)
