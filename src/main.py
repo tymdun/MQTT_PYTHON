@@ -23,7 +23,7 @@ def sendMessage():
                 "name": configList[2], "message": messageContents}
     jsonToSend = json.dumps(jsonInPy)
     logging.info("The json to be sent: " + jsonToSend)
-    client.publish("tymdun/message", payload=jsonToSend, qos=1)
+    client.publish("tymdun/message", payload=jsonToSend, qos=1, retain=1)
 
 
 def enterPressed(Event):
@@ -69,15 +69,25 @@ root.bind('<Return>', enterPressed)
 
 
 def on_message(client, userdata, message):
+    print(str(message.payload.decode("utf-8")))
     logging.info("message received " + str(message.payload.decode("utf-8")))
     logging.info("message topic=" + message.topic)
     logging.info("message qos=" + str(message.qos))
     logging.info("message retain flag=" + str(message.retain))
-    jsonToPy = json.loads(str(message.payload.decode("utf-8")))
-    epochTime = jsonToPy["timestamp"]
-    timeRecieve = datetime.datetime(epochTime)
-    inputTxt.insert("end", timeRecieve)
-    inputTxt.insert("end", " " + str(message.payload.decode("utf-8")))
+    tempString = str(message.payload.decode("utf-8"))
+    print(tempString)
+    try:
+        jsonToPy = json.loads(tempString)
+        # print(jsonToPy)
+        epochTime = jsonToPy["timestamp"]
+        epochTime = int(epochTime)
+        timeRecieve = datetime.datetime.fromtimestamp(epochTime)
+        messageTxt.insert("end", timeRecieve)
+        messageTxt.config(state='normal')
+        messageTxt.insert("end", " " + str(message.payload.decode("utf-8")))
+        messageTxt.config(state='disabled')
+    except json.decoder.JSONDecodeError:
+        logging.info("Invalid format recieved")
 
 
 def on_publish(client, userdata, mid):
