@@ -39,8 +39,6 @@ def checkArguments(numArguments):
 
 
 def mqtt_check_inputs():
-    verbose = False
-    help = False
     host = "localhost"
     port = "1883"
     name = "TylerClient"
@@ -51,7 +49,7 @@ def mqtt_check_inputs():
         opt, args = getopt.getopt(
             argv, "h:p:n:v", ["host=", "port=", "name=", "verbose", "help"])
 
-    except getopt.GetoptError as e:
+    except getopt.GetoptError:
         print("Option requires an argument", file=sys.stderr)
         printhelp(False)
 
@@ -66,7 +64,6 @@ def mqtt_check_inputs():
             name = arg
         elif opt in ['-v']:
             logging.basicConfig(level=logging.DEBUG)
-            verbose = True
 
     checkPort(port)
     checkArguments(len(args))
@@ -80,4 +77,4 @@ def mqtt_check_inputs():
 
     configList = (host, port, name, netId)
     # print(configList)
-    return [host, port, name, netId]
+    return configList
