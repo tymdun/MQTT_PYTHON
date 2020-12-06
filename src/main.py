@@ -4,39 +4,13 @@ import paho.mqtt.client as mqtt
 import time
 import logging
 import json
+import datetime
 
 HEIGHT = 700
 WIDTH = 1000
 ONLINEUSERS_COLOR = '#018786'
 MESSAGE_COLOR = '#800080'
 INPUT_COLOR = '#192734'
-
-# MQTT HANDLERS FOR PYTHON -------------------------------------------------------
-
-
-def on_message(client, userdata, message):
-    print(str(message.payload.decode("utf-8")))
-    logging.info("message received " + str(message.payload.decode("utf-8")))
-    logging.info("message topic=" + message.topic)
-    logging.info("message qos=" + str(message.qos))
-    logging.info("message retain flag=" + str(message.retain))
-
-
-def on_publish(client, userdata, mid):
-    logging.info("message succesfully sent")
-
-
-configList = inputparsing.mqtt_check_inputs()
-print(configList)
-client = mqtt.Client(configList[2], clean_session=False)
-client.on_message = on_message
-client.on_publish = on_publish
-client.connect(configList[0], int(configList[1]))
-client.loop_start()
-client.subscribe("tymdun/response", qos=1)
-time.sleep(0.5)
-
-# exit()
 
 # Event handling function ----------------------------------------------
 
@@ -49,13 +23,14 @@ def sendMessage():
                 "name": configList[2], "message": messageContents}
     jsonToSend = json.dumps(jsonInPy)
     logging.info("The json to be sent: " + jsonToSend)
-    client.publish("tymdun/uppercase", payload="MeatSticks")
+    client.publish("tymdun/message", payload=jsonToSend, qos=1)
 
 
 def enterPressed(Event):
     sendMessage()
 
 
+# Creates the gui parameters to follow
 # Creates the root gui
 root = tk.Tk()
 root.title("MQTT CHAT ROOM")
@@ -90,10 +65,40 @@ inputTxt.place(relheight=1, relwidth=0.8)
 # Event Bindings
 root.bind('<Return>', enterPressed)
 
+# MQTT HANDLERS FOR PYTHON -------------------------------------------------------
+
+
+def on_message(client, userdata, message):
+    logging.info("message received " + str(message.payload.decode("utf-8")))
+    logging.info("message topic=" + message.topic)
+    logging.info("message qos=" + str(message.qos))
+    logging.info("message retain flag=" + str(message.retain))
+    jsonToPy = json.loads(str(message.payload.decode("utf-8")))
+    epochTime = jsonToPy["timestamp"]
+    timeRecieve = datetime.datetime(epochTime)
+    inputTxt.insert("end", timeRecieve)
+    inputTxt.insert("end", " " + str(message.payload.decode("utf-8")))
+
+
+def on_publish(client, userdata, mid):
+    logging.info("message succesfully sent")
+
+
+configList = inputparsing.mqtt_check_inputs()
+print(configList)
+client = mqtt.Client(configList[2], clean_session=False)
+client.on_message = on_message
+client.on_publish = on_publish
+client.connect(configList[0], int(configList[1]))
+client.loop_start()
+client.subscribe("+/message", qos=1)
+time.sleep(0.5)
+
+# exit()
+
 
 # button = tk.Button(inputBox, text="TEST BUTTON", bg='black')
 # button.place(relheight=0.05, relwidth=0.1, rely=0.95, relx=0.5)
-
 
 root.mainloop()
 client.loop_stop()
