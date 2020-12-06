@@ -33,10 +33,8 @@ client.on_message = on_message
 client.on_publish = on_publish
 client.connect(configList[0], int(configList[1]))
 client.loop_start()
-client.publish("tymdun/uppercase", payload="MeatSticks")
 client.subscribe("tymdun/response", qos=1)
 time.sleep(0.5)
-client.loop_stop()
 
 # exit()
 
@@ -51,6 +49,7 @@ def sendMessage():
                 "name": configList[2], "message": messageContents}
     jsonToSend = json.dumps(jsonInPy)
     logging.info("The json to be sent: " + jsonToSend)
+    client.publish("tymdun/uppercase", payload="MeatSticks")
 
 
 def enterPressed(Event):
@@ -97,3 +96,4 @@ root.bind('<Return>', enterPressed)
 
 
 root.mainloop()
+client.loop_stop()
