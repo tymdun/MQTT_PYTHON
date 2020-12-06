@@ -68,6 +68,17 @@ root.bind('<Return>', enterPressed)
 # MQTT HANDLERS FOR PYTHON -------------------------------------------------------
 
 
+def printMessage(messageJson):
+    epochTime = messageJson["timestamp"]
+    epochTime = int(epochTime)
+    timeRecieve = datetime.datetime.fromtimestamp(epochTime)
+    #messageTxt.insert("end", timeRecieve)
+    messageTxt.config(state='normal')
+    messageTxt.insert(
+        "end", str(timeRecieve) + " " + messageJson["name"] + ": " + messageJson["message"] + '\n')
+    messageTxt.config(state='disabled')
+
+
 def on_message(client, userdata, message):
     print(str(message.payload.decode("utf-8")))
     logging.info("message received " + str(message.payload.decode("utf-8")))
@@ -78,14 +89,7 @@ def on_message(client, userdata, message):
     print(tempString)
     try:
         jsonToPy = json.loads(tempString)
-        # print(jsonToPy)
-        epochTime = jsonToPy["timestamp"]
-        epochTime = int(epochTime)
-        timeRecieve = datetime.datetime.fromtimestamp(epochTime)
-        messageTxt.insert("end", timeRecieve)
-        messageTxt.config(state='normal')
-        messageTxt.insert("end", " " + str(message.payload.decode("utf-8")))
-        messageTxt.config(state='disabled')
+        printMessage(jsonToPy)
     except json.decoder.JSONDecodeError:
         logging.info("Invalid format recieved")
 
