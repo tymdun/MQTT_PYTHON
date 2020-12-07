@@ -41,7 +41,7 @@ def checkArguments(numArguments):
 def mqtt_check_inputs():
     host = "localhost"
     port = "1883"
-    name = "TylerClient"
+    name = "DEFAULT"
     netId = "NETID"
 
     argv = sys.argv[1:]
@@ -69,6 +69,9 @@ def mqtt_check_inputs():
     checkArguments(len(args))
 
     netId = argv[-1]
+
+    if(name == "DEFAULT"):
+        name = netId
 
     logging.info('Host: ' + host)
     logging.info('Port: ' + port)
