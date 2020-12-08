@@ -12,6 +12,7 @@ WIDTH = 1000
 ONLINEUSERS_COLOR = '#018786'
 MESSAGE_COLOR = '#800080'
 INPUT_COLOR = '#192734'
+randomizeClient = "tymdun"  # f'{configList[3]}-{random.randint(0, 1000)}'
 
 # Event handling function ----------------------------------------------
 
@@ -85,6 +86,14 @@ def printOnline(messageJson):
         "end", messageJson["name"] + ": " + str(messageJson["online"]) + '\n')
     onlineText.config(state='disabled')
 
+
+def createLastWill():
+    jsonInPy = {"name": configList[2], "online": 0}
+    jsonToSend = json.dumps(jsonInPy)
+    logging.info("The last will: " + jsonToSend)
+    return jsonToSend
+
+
 # MQTT HANDLERS FOR PYTHON -------------------------------------------------------
 
 
@@ -115,7 +124,17 @@ def on_publish(client, userdata, mid):
 
 
 def on_connect(client, userdata, flags, rc):
+    logging.info("Connected")
     jsonInPy = {"name": configList[2], "online": 1}
+    jsonToSend = json.dumps(jsonInPy)
+    logging.info("The json to be sent: " + jsonToSend)
+    client.publish(configList[3] + "/status",
+                   payload=jsonToSend, qos=1, retain=1)
+
+
+def on_disconnect(client, userdata, rc):
+    logging.info("Disconnected")
+    jsonInPy = {"name": configList[2], "online": 0}
     jsonToSend = json.dumps(jsonInPy)
     logging.info("The json to be sent: " + jsonToSend)
     client.publish(configList[3] + "/status",
@@ -125,22 +144,19 @@ def on_connect(client, userdata, flags, rc):
 configList = inputparsing.mqtt_check_inputs()
 print(configList)
 # generates random Client for MQTT
-randomizeClient = f'{configList[3]}-{random.randint(0, 1000)}'
 client = mqtt.Client(randomizeClient, clean_session=False)
+lastWillJson = createLastWill()
+print(lastWillJson)
 client.on_message = on_message
 client.on_connect = on_connect
 client.on_publish = on_publish
+client.on_disconnect = on_disconnect
+#client.will_set("+/status", lastWillJson, qos=1, retain=1)
 client.connect(configList[0], int(configList[1]))
 client.loop_start()
 client.subscribe("+/message", qos=1)
 client.subscribe("+/status", qos=1)
 time.sleep(0.5)
-
-# exit()
-
-
-# button = tk.Button(inputBox, text="TEST BUTTON", bg='black')
-# button.place(relheight=0.05, relwidth=0.1, rely=0.95, relx=0.5)
-
 root.mainloop()
+client.disconnect()
 client.loop_stop()
