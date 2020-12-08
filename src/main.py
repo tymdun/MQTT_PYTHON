@@ -82,10 +82,27 @@ def printMessage(messageJson):
     messageTxt.config(state='disabled')
 
 
-def printOnline(username):
+# def printOnline(username):
+#    onlineText.config(state='normal')
+#    onlineText.insert(
+#        "end", username["name"] + ": " + str(username["online"]) + '\n')
+#    onlineText.config(state='disabled')
+
+def printOnline(username, status):
     onlineText.config(state='normal')
-    onlineText.insert(
-        "end", username["name"] + ": " + str(username["online"]) + '\n')
+    statusString = "null"
+    x = 0
+    print(username)
+    print(status)
+    onlineText.delete('1.0', "end")
+    while x < len(username):
+        if status[x]:
+            statusString = "online"
+        else:
+            statusString = "offline"
+        onlineText.insert(
+            "end", username[x] + ": " + statusString + '\n')
+        x = x + 1
     onlineText.config(state='disabled')
 
 
@@ -119,29 +136,31 @@ def on_message(client, userdata, message):
             logging.info("Invalid format recieved")
     elif "online" in tempString:
         try:
-            # jsonToPy = json.loads(tempString)
-            # if len(onlineUsersNameList) is 0:
-            #    onlineUsersNameList.append(jsonToPy["name"])
-            #    onlineUsersStatusList.append(jsonToPy["online"])
-            # while x < len(onlineUsersNameList):
-            #  if onlineUsersNameList[x] == jsonToPy["name"]:
-            #       nameAlreadyExists = True
-            #        indexToUpdate = x
-            #        if onlineUsersStatusList[x] == jsonToPy["online"]:
-            #            statusUpdated = True
-            # if not statusUpdated and indexToUpdate is not -1:
-            #    onlineUsersStatusList[indexToUpdate] = jsonToPy["online"]
-            # if not nameAlreadyExists:
-            #    onlineUsersNameList.append(jsonToPy["name"])
-            #    onlineUsersStatusList.append(jsonToPy["online"])
-            # printOnline(onlineUsersNameList, onlineUsersStatusList)
-
-            # if jsonToPy['name'] not in onlineUsers:
-            #    onlineUsersList.append((jsonToPy["name"], jsonToPy["online"]))
-            #   printOnline(jsonToPy)
-
             jsonToPy = json.loads(tempString)
-            printOnline(jsonToPy)
+            if len(onlineUsersNameList) is 0:
+                onlineUsersNameList.append(jsonToPy["name"])
+                onlineUsersStatusList.append(jsonToPy["online"])
+            while x < len(onlineUsersNameList):
+                if onlineUsersNameList[x] == jsonToPy["name"]:
+                    nameAlreadyExists = True
+                    indexToUpdate = x
+                    if onlineUsersStatusList[x] == jsonToPy["online"]:
+                        statusUpdated = True
+                        break
+                x = x + 1
+            if not statusUpdated and indexToUpdate is not -1:
+                onlineUsersStatusList[indexToUpdate] = jsonToPy["online"]
+            if not nameAlreadyExists:
+                onlineUsersNameList.append(jsonToPy["name"])
+                onlineUsersStatusList.append(jsonToPy["online"])
+            printOnline(onlineUsersNameList, onlineUsersStatusList)
+
+         #   if jsonToPy['name'] not in onlineUsers:
+         #       onlineUsersList.append((jsonToPy["name"], jsonToPy["online"]))
+         #       printOnline(jsonToPy)
+
+            # jsonToPy = json.loads(tempString)
+            # printOnline(jsonToPy)
             # else:
             #    print("Not there")
         except json.decoder.JSONDecodeError:
