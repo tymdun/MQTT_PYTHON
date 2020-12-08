@@ -13,6 +13,8 @@ ONLINEUSERS_COLOR = '#018786'
 MESSAGE_COLOR = '#800080'
 INPUT_COLOR = '#192734'
 randomizeClient = "tymdun"  # f'{configList[3]}-{random.randint(0, 1000)}'
+onlineUsersNameList = []
+onlineUsersStatusList = []
 
 # Event handling function ----------------------------------------------
 
@@ -80,10 +82,10 @@ def printMessage(messageJson):
     messageTxt.config(state='disabled')
 
 
-def printOnline(messageJson):
+def printOnline(username):
     onlineText.config(state='normal')
     onlineText.insert(
-        "end", messageJson["name"] + ": " + str(messageJson["online"]) + '\n')
+        "end", username["name"] + ": " + str(username["online"]) + '\n')
     onlineText.config(state='disabled')
 
 
@@ -99,6 +101,10 @@ def createLastWill():
 
 def on_message(client, userdata, message):
     # print(str(message.payload.decode("utf-8")))
+    nameAlreadyExists = False
+    statusUpdated = False
+    indexToUpdate = -1
+    x = 0
     logging.info("message received " + str(message.payload.decode("utf-8")))
     logging.info("message topic=" + message.topic)
     logging.info("message qos=" + str(message.qos))
@@ -113,8 +119,31 @@ def on_message(client, userdata, message):
             logging.info("Invalid format recieved")
     elif "online" in tempString:
         try:
+            # jsonToPy = json.loads(tempString)
+            # if len(onlineUsersNameList) is 0:
+            #    onlineUsersNameList.append(jsonToPy["name"])
+            #    onlineUsersStatusList.append(jsonToPy["online"])
+            # while x < len(onlineUsersNameList):
+            #  if onlineUsersNameList[x] == jsonToPy["name"]:
+            #       nameAlreadyExists = True
+            #        indexToUpdate = x
+            #        if onlineUsersStatusList[x] == jsonToPy["online"]:
+            #            statusUpdated = True
+            # if not statusUpdated and indexToUpdate is not -1:
+            #    onlineUsersStatusList[indexToUpdate] = jsonToPy["online"]
+            # if not nameAlreadyExists:
+            #    onlineUsersNameList.append(jsonToPy["name"])
+            #    onlineUsersStatusList.append(jsonToPy["online"])
+            # printOnline(onlineUsersNameList, onlineUsersStatusList)
+
+            # if jsonToPy['name'] not in onlineUsers:
+            #    onlineUsersList.append((jsonToPy["name"], jsonToPy["online"]))
+            #   printOnline(jsonToPy)
+
             jsonToPy = json.loads(tempString)
             printOnline(jsonToPy)
+            # else:
+            #    print("Not there")
         except json.decoder.JSONDecodeError:
             logging.info("Invalid format recieved")
 
@@ -151,12 +180,12 @@ client.on_message = on_message
 client.on_connect = on_connect
 client.on_publish = on_publish
 client.on_disconnect = on_disconnect
-#client.will_set("+/status", lastWillJson, qos=1, retain=1)
+# client.will_set("+/status", lastWillJson, qos=1, retain=1)
 client.connect(configList[0], int(configList[1]))
 client.loop_start()
 client.subscribe("+/message", qos=1)
 client.subscribe("+/status", qos=1)
 time.sleep(0.5)
 root.mainloop()
-client.disconnect()
+on_disconnect(client, 0, 0)
 client.loop_stop()
