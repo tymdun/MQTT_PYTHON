@@ -12,7 +12,6 @@ WIDTH = 1000
 ONLINEUSERS_COLOR = '#018786'
 MESSAGE_COLOR = '#800080'
 INPUT_COLOR = '#192734'
-randomizeClient = "tymdun"  # f'{configList[3]}-{random.randint(0, 1000)}'
 onlineUsersNameList = []
 onlineUsersStatusList = []
 
@@ -192,6 +191,7 @@ def on_disconnect(client, userdata, rc):
 configList = inputparsing.mqtt_check_inputs()
 print(configList)
 # generates random Client for MQTT
+randomizeClient = f'{configList[3]}-{random.randint(0, 1000)}'
 client = mqtt.Client(randomizeClient, clean_session=False)
 lastWillJson = createLastWill()
 print(lastWillJson)
@@ -206,5 +206,5 @@ client.subscribe("+/message", qos=1)
 client.subscribe("+/status", qos=1)
 time.sleep(0.5)
 root.mainloop()
-on_disconnect(client, 0, 0)
 client.loop_stop()
+on_disconnect(client, 0, 0)
