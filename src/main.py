@@ -20,6 +20,7 @@ onlineUsersStatusList = []
 
 def sendMessage():
     messageContents = inputTxt.get("1.0", "end")
+    messageContents = messageContents.replace("\n", "")
     inputTxt.delete("1.0", "end")
     currentTime = int(time.time())
     jsonInPy = {"timestamp": currentTime,
@@ -91,8 +92,8 @@ def printOnline(username, status):
     onlineText.config(state='normal')
     statusString = "null"
     x = 0
-    print(username)
-    print(status)
+    # print(username)
+    # print(status)
     onlineText.delete('1.0', "end")
     while x < len(username):
         if status[x]:
@@ -174,7 +175,7 @@ def on_connect(client, userdata, flags, rc):
     logging.info("Connected")
     jsonInPy = {"name": configList[2], "online": 1}
     jsonToSend = json.dumps(jsonInPy)
-    logging.info("The json to be sent: " + jsonToSend)
+    logging.info("2 The json to be sent: " + jsonToSend)
     client.publish(configList[3] + "/status",
                    payload=jsonToSend, qos=1, retain=1)
 
@@ -183,7 +184,7 @@ def on_disconnect(client, userdata, rc):
     logging.info("Disconnected")
     jsonInPy = {"name": configList[2], "online": 0}
     jsonToSend = json.dumps(jsonInPy)
-    logging.info("The json to be sent: " + jsonToSend)
+    logging.info("1 The json to be sent: " + jsonToSend)
     client.publish(configList[3] + "/status",
                    payload=jsonToSend, qos=1, retain=1)
 
@@ -199,12 +200,14 @@ client.on_message = on_message
 client.on_connect = on_connect
 client.on_publish = on_publish
 client.on_disconnect = on_disconnect
-#client.will_set("+/status", lastWillJson, qos=1, retain=1)
+#client.will_set("+/status", payload=lastWillJson, qos=1, retain=1)
 client.connect(configList[0], int(configList[1]))
 client.loop_start()
 client.subscribe("+/message", qos=1)
 client.subscribe("+/status", qos=1)
-time.sleep(0.5)
+# time.sleep(0.5)
 root.mainloop()
 client.loop_stop()
+# client.disconnect()
 on_disconnect(client, 0, 0)
+# time.sleep(1)
