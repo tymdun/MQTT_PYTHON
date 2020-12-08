@@ -199,7 +199,7 @@ client.on_message = on_message
 client.on_connect = on_connect
 client.on_publish = on_publish
 client.on_disconnect = on_disconnect
-# client.will_set("+/status", lastWillJson, qos=1, retain=1)
+client.will_set("+/status", lastWillJson, qos=1, retain=1)
 client.connect(configList[0], int(configList[1]))
 client.loop_start()
 client.subscribe("+/message", qos=1)
